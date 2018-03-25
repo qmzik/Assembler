@@ -1,0 +1,30 @@
+%macro lol 2
+    
+    .loop: 
+        lodsb 
+        cmp al, 0x0A ; \n 
+        je .printOutput 
+        cmp al, byte [%1] 
+        je .pushInStack 
+        stosb 
+        jmp .loop 
+        
+    .printOutput:
+        mov al, ah 
+        cmp al, byte [%1] 
+        je .saveByteAndExit 
+        jmp .exit 
+        
+    .exit: 
+        PRINT_STRING %2 
+        ret 
+        
+    .pushInStack: 
+        mov ah, byte [%1] 
+        jmp .loop 
+        
+    .saveByteAndExit: 
+        stosb 
+        PRINT_STRING %2 
+        ret
+%endmacro
